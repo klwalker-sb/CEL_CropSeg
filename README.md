@@ -25,8 +25,8 @@
    
 #### <b>seg0_config</b>     
 * splits training digitizations -- polys and chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```  
-* copies cultionetTEMP template from seg_utils folder to {VERSION_DIR}    
-* updates {VERSION_DIR}/config_cultionet.yml using seg0_config.sh settings         
+* copies cultionetTEMP template from seg_utils folder to  ```{VERSION_DIR}```   
+* updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS</b>    
 * <b>update #SBATCH --array GRID_ID in bash script</b>       
