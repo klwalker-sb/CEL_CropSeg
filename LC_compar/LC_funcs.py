@@ -14,32 +14,28 @@ ee.Authenticate()
 ## MAPBIOMAS download
 
 def MB_PRY_GEE(years, out_dir, grid_file):
-    gdf = gpd.read_file(grid_file)
-    gdf = gdf.set_crs(gdf.crs)
-    gdf_web = gdf.to_crs('EPSG:4326')
-
+    gdf = gpd.read_file(grid_file).to_crs('EPSG:4326')
     YR_names = ['classification_'+str(yr) for yr in years] 
     print(YR_names)
-    for k, cell in gdf_web.iterrows():
+    for k, cell in gdf.iterrows():
         aoi = ee.Geometry.Rectangle([cell.geometry.bounds[0], cell.geometry.bounds[1], cell.geometry.bounds[2], cell.geometry.bounds[3]])
         UNQ = int(cell['UNQ'])
 
         dst = ee.Image( "projects/mapbiomas-public/assets/paraguay/collection1/mapbiomas_paraguay_collection1_integration_v1")
         bands = dst.select(YR_names)
         projection = bands.projection().getInfo() ## arbitrary band, to grab CRS extent info
-
         for year in YR_names: # save one band at a time 
             full_out_dir=os.path.join(out_dir, year.replace("classification", "MB_PRY"))
             if not os.path.exists(full_out_dir):
                 os.makedirs(full_out_dir)
-            
             out_name=os.path.join(full_out_dir, year.replace("classification", "MB_PRY")+"_"+"UNQ"+str(UNQ)+".tif")
-            if not os.path.exists(out_name):
+            if os.path.exists(out_name):
+                print(out_name+' exists')
+            else:
                 geemap.ee_export_image(bands.select(year), 
                                     filename=out_name, 
                                     crs=projection.get('crs'), crs_transform=projection.get('transform'),
                                     region=aoi, file_per_band=True)
-
 
 ## create virtual mosaic 
 def vrt_mosaic(in_dir, out_vrt):
