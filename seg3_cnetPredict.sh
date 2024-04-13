@@ -47,7 +47,7 @@ cd $VERSION_DIR/
 
 cultionet create-predict -p . -y $END_YR -w 100 --padding 110 --ts-path $REGION --append-ts y --image-date-format %Y%j -n 4 --config-file $CONFIG_FILE -sd $MMDD -ed $MMDD
 
-cultionet predict -p . -y $END_YR -o $OUT_NAME -d data/predict/processed/ --region $REGION --ref-image $GEOREF_IMG -g $GRID_ID -w 100 --padding 101 --device gpu --batch-size 4 -sd $MMDD -ed $MMDD --config-file $CONFIG_FILE 
+cultionet predict -p . -y $END_YR -o $OUT_NAME -d data/predict/processed/ --region $REGION --ref-image $GEOREF_IMG -g $GRID_ID -w 100 --padding 101 --device $CPU_GPU --batch-size 4 -sd $MMDD -ed $MMDD --config-file $CONFIG_FILE 
 
 
 conda deactivate
