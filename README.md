@@ -9,10 +9,10 @@
 </b> 
 
 > cd ~/    
-> git clone https://github.com/laurensharwood/CEL_CropSeg.git    
-> mv -r CEL_CropSeg/* ~/code/bash   
-> rm -r CEL_CropSeg    
-> cd ~/code/bash   
+> git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
+> mv CEL_CropSeg/* ~/code/bash ## move files from this repo into bash directory     
+> rm -r CEL_CropSeg ## delete empty directory    
+> cd ~/code/bash ## navigate into bash directory to run seg0-seg5.sh     
 > vim seg0_config.sh ## update version parameters      
 > sbatch seg0_config.sh   
 > sbatch seg1_prepTrain_TS.sh ## update #SBATCH --array GRID_ID for training chip regions to prep     
