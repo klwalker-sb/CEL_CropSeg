@@ -37,27 +37,46 @@ def MB_PRY_GEE(years, out_dir, grid_file):
                                     crs=projection.get('crs'), crs_transform=projection.get('transform'),
                                     region=aoi, file_per_band=True)
 
-## create virtual mosaic 
-def vrt_mosaic(in_dir, filter_string, out_vrt):
-    """
-    in_dir = file path for folder containing prediction rasters to create virtual (vrt) mosaic from
-    out_vrt = output path+name for vrt mosaic (not outputting to /home/lsharwood, working with /home/downspout-cel/paraguay_lc/SegmentationData/SegmentTest/)
-    vrt_mosaic function creates out_vrt_name from rasters in in_path that ** end with '.tif' and contain filter_string 
-    """
-    file_path_list = [os.path.join(in_dir, fi) for fi in os.listdir(in_dir) if (fi.endswith(".tif") and filter_string in fi)] # path+names of files
-    gdal.BuildVRT(out_vrt, sorted(file_path_list))
-    return out_vrt
 
+from rasterio.warp import calculate_default_transform, transform, reproject, Resampling
+from rasterio.merge import merge
+from pathlib import Path
+from rasterio.features import shapes
 
-def reclass_dict(csv_path, old_col, new_col):
+def mosaic_rasters(in_rasters, out_path):
     '''
-    csv_path = full file path to csv
-    old_col = column name with old raster values
-    new_col = column name with new raster values 
-    returns dictionary used to reclassify raster
+    in_rasters: takes list of rasters to mosaic, or input directory where all files in that folder are mosaiced
+    out_path: directory and name to save mosaic... no extension (will be .tif)
+    returns out_path
+    '''
+    if type(in_rasters) == str:
+        rasters = sorted([os.path.join(in_rasters, i) for i in os.listdir(in_rasters) if i.endswith(".tif")])
+    elif type(in_rasters) == list:
+        rasters = in_rasters
+        
+    with rio.open(rasters[1]) as src:
+        tmp_arr = src.read()
+        rast_crs=src.crs
+        nodata = src.nodata
+    # The merge function returns a single array and the affine transform info
+    arr, out_trans = merge(rasters)
+
+    out_meta = {'driver': 'GTiff', 'dtype':arr[0][0][0].dtype, 'nodata': nodata, 
+    'count': arr.shape[0], 'height': arr.shape[1], 'width': arr.shape[2], 
+    'crs': rast_crs, 'transform': out_trans}
+    
+    with rio.open(out_path, 'w', **out_meta) as dst:
+        dst.write(arr)
+
+    return out_path
+
+from pathlib import Path
+def make_reclass_dict(csv_path, old_col, new_col):
+    '''
+    0 stays as 0
     '''
     reclass_df = pd.read_csv(csv_path)
-    old_new_dict = dict(zip(reclass_df.old_col, reclass_df.new_col))
+    old_new_dict = dict(zip(reclass_df[old_col], reclass_df[new_col]))
     old_new_dict[0] = 0   
     return old_new_dict
 
@@ -69,18 +88,19 @@ def reclassify_raster(raster_path, old_new, out_dir):
     0 should be no data value 
     '''
     if type(old_new) == str:
-        reclass_dict = reclass_dict(csv_path=old_new, old_col="old", new_col="new")
+        reclass_dict = make_reclass_dict(csv_path=old_new, old_col="old", new_col="new")
     elif type(old_new) == dict:
         reclass_dict = old_new
     print(reclass_dict)
-    new_name = Path(raster_path).stem+"_reclass.tif"
+    new_name = Path(raster_path).stem+"_reclass."+raster_path.split(".")[-1]
     with rio.open(raster_path) as src:
         old_arr = src.read(1)
         out_meta = src.meta.copy()
         if len(np.unique(old_arr)) > 1: ## if there are any values other than 0, nodata 
             new_arr = np.vectorize(reclass_dict.get)(old_arr)
-            print(raster_path, "old raster vals: ", np.unique(old_arr), "new raster vals: ", np.unique(new_arr))
+            print(raster_path+ ": old raster vals: ", np.unique(old_arr), "    new raster vals: ", np.unique(new_arr))
             out_meta.update({'nodata': 0})
             with rio.open(os.path.join(out_dir, new_name), 'w', **out_meta) as dst:
                 dst.write(new_arr, indexes=1)
             print(new_name)
+
