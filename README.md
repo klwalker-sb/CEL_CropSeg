@@ -44,8 +44,9 @@
 * 'cultionet predict' runs inference on UNQ GRID_ID cells, save 4band predictions in ```{VERSION_DIR}/composites_probas``` where b1=crop extent probability, b2=distance to border, b3=border probability, and b4 is blank     
 
 #### <b>sbatch seg4_fieldMetrics</b>    
-* save single-band inference rasters -- 1:distance to border, 2:extent into ```{VERSION_DIR}/feats```  
-* create vectors of crop field instances in  ```{VERSION_DIR}/infer_polys```   to calculate field size metrics -- 3:area, 4:area/perimeter(APR), 5:texture(seasonal stDev) -- then convert to rastert in ```{VERSION_DIR}/feats```  
+* saves single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```  
+* create vectors of crop field instances in  ```{VERSION_DIR}/infer_polys``` to calculate field size attributes -- 3:area, 4:area/perimeter(APR), 5:texture(seasonal stDev) -- then convert those attributes to rasters in ```{VERSION_DIR}/feats``` 
+  
 
 #### <b>sbatch seg5_chipAcc</b>    
 * calculate per-chip accuracy metrics compared to reference(training digitizations)       
