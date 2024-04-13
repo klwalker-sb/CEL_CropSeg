@@ -24,13 +24,13 @@ see [cultionet repo](https://github.com/jgrss/cultionet) for training data & con
 > mv -r CEL_CropSeg/* ~/code/bash
 > rm -r CEL_CropSeg
 > cd ~/code/bash
-## update seg0_config version parameters 
+> ## update seg0_config version parameters 
 > vim seg0_config.sh
 > sbatch seg0_config.sh
-## update #SBATCH --array GRID_ID for training chip regions to prep  
+> ## update #SBATCH --array GRID_ID for training chip regions to prep  
 > sbatch seg1_prepTrain_TS.sh
 > sbatch seg2_cnetTrain.sh 
-## update #SBATCH --array GRID_ID for prediction grid cells to predict   
+> ## update #SBATCH --array GRID_ID for prediction grid cells to predict   
 > sbatch seg3_cnetPredict.sh
 > sbatch sbatch seg4_fieldMetrics.sh
 > sbatch sbatch seg5_chipAcc.sh
