@@ -1,0 +1,17 @@
+image_vis:
+- kndvi
+- gcvi
+- nbr
+- ndmi
+
+predict_year: 2022
+
+region_id_file: /home/downspout-cel/paraguay_lc/Segmentations/cnet22_4VI/cnet_training_regions.txt
+
+regions: null
+
+start_year: 2021
+
+years:
+- 2022
+

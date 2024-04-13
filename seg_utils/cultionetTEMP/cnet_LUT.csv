@@ -1,0 +1,16 @@
+,catUNQ,class
+NoCrop,0,0
+NoVeg,0,0
+LowVeg_grass,10,0
+LowVeg_grass_managed,13,0
+Crop_low_single,20,1
+Crop_mixed,35,1
+LowVeg_plantation,36,0
+Crop_med,40,1
+Crop_med_vineyard,41,0
+Crop_med_yerba-mate,42,1
+Crop_med_orchard,46,0
+MedVeg_natural,50,0
+MedVeg_plantation,56,0
+HighVeg_plantation,60,0
+HighVeg_natural,80,0
