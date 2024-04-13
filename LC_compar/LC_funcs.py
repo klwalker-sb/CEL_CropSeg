@@ -38,17 +38,15 @@ def MB_PRY_GEE(years, out_dir, grid_file):
                                     region=aoi, file_per_band=True)
 
 ## create virtual mosaic 
-def vrt_mosaic(in_dir, out_vrt):
+def vrt_mosaic(in_dir, filter_string, out_vrt):
     """
     in_dir = file path for folder containing prediction rasters to create virtual (vrt) mosaic from
-    out_vrt_name = output path+name for vrt mosaic (not outputting to /home/lsharwood, working with /home/downspout-cel/paraguay_lc/SegmentationData/SegmentTest/)
-    vrt_mosaic function creates out_vrt_name from rasters in in_path that ** end with '.tif' and start with 'pred' **
+    out_vrt = output path+name for vrt mosaic (not outputting to /home/lsharwood, working with /home/downspout-cel/paraguay_lc/SegmentationData/SegmentTest/)
+    vrt_mosaic function creates out_vrt_name from rasters in in_path that ** end with '.tif' and contain filter_string 
     """
-    file_list = [file for file in os.listdir(in_dir) if (os.path.splitext(file)[-1] == '.tif' and os.path.splitext(file)[-2].startswith('pred'))] # names of files
-    file_path_list = [os.path.join(in_dir, fi) for fi in file_list] # path+names of files
+    file_path_list = [os.path.join(in_dir, fi) for fi in os.listdir(in_dir) if (fi.endswith(".tif") and filter_string in fi)] # path+names of files
     gdal.BuildVRT(out_vrt, sorted(file_path_list))
-    print(out_vrt)
-    return(out_vrt)
+    return out_vrt
 
 
 def reclass_dict(csv_path, old_col, new_col):
