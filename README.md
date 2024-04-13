@@ -8,13 +8,12 @@
 3. run seg0-seg5, only updating #SBATCH --array GRID_ID in seg1 & seg3   
 </b> 
 
-> cd ~/    
+> cd ~/code/bash
 > git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
-> mv CEL_CropSeg/* ~/code/bash ## move files from this repo into bash directory     
-> rm -r CEL_CropSeg ## delete empty directory    
-> cd ~/code/bash ## navigate into bash directory to run seg0-seg5.sh     
+> mv CEL_CropSeg/* . ## move files from this repo into current directory      
+> rm -r CEL_CropSeg ## delete empty directory (y...)       
 > vim seg0_config.sh ## update version parameters      
-> sbatch seg0_config.sh   
+> sbatch seg0_config.sh  
 > sbatch seg1_prepTrain_TS.sh ## update #SBATCH --array GRID_ID for training chip regions to prep     
 > sbatch seg2_cnetTrain.sh   
 > sbatch seg3_cnetPredict.sh ## update #SBATCH --array GRID_ID for prediction grid cells to predict    
