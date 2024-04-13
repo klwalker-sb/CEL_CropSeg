@@ -30,7 +30,7 @@
 
 #### <b>seg1_prepTrain_TS</b>    
 * <b>update #SBATCH --array GRID_ID in bash script</b>       
-* for each UNQ GRID_ID ID that contains a 1km training chip, save time-series in ```{VERSION_DIR}/time_series_vars/{REGION}``` -- clip to chip shape, named {REGION}, or clip and mosaic where chip overlaps more than one UNQ GRID_ID cell        
+* for each UNQ GRID_ID that contains a 1km training chip, save time-series in ```{VERSION_DIR}/time_series_vars/{REGION}``` -- clip to chip shape, named {REGION}, or clip and mosaic where chip overlaps more than one UNQ GRID_ID cell        
 
 #### <b>seg2_cnetTrain</b>    
 * saves list of regions that have completed time series as cnet_training_regions.txt, which is used by config_cultionet.yml in the following step   
