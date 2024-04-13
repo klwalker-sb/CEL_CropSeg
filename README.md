@@ -1,6 +1,6 @@
 #### CREATE CULTIONET ENVIRONMENT  
-> conda create --name .cultionet38 python=3.8  ## .cultionet38 virtual environment called in bash scripts   
-see [cultionet repo](https://github.com/jgrss/cultionet) for training data & config file requirements  
+> conda create --name .cultionet38 python=3.8  ## .cultionet38 virtual environment called in bash scripts    
+* see [cultionet repo](https://github.com/jgrss/cultionet) for [install instructions](https://github.com/jgrss/cultionet?tab=readme-ov-file#installation), training data & config file requirements     
 
 ## STEPS TO CREATE CROP FIELD INSTANCES & FIELD SIZE METRICS  
 <b>1. copy files from this repo into ```~/code/bash```   
