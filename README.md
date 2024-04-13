@@ -34,7 +34,7 @@
 
 #### <b>seg2_cnetTrain</b>    
 * saves list of regions that have completed time series as cnet_training_regions.txt, which is used by config_cultionet.yml in the following step   
-* 'cultionet create' makes pytorch (.pt) training for each chip in ```{VERSION_DIR}/data/train/``` referencing config_cultionet.yml, ```{VERSION_DIR}/user_train``` chips & polys, and ```{VERSION_DIR}/time_series_vars``` veg indices 
+* 'cultionet create' makes pytorch (.pt) training for each chip in ```{VERSION_DIR}/data/train/processed``` referencing config_cultionet.yml, ```{VERSION_DIR}/user_train``` chips & polys, and ```{VERSION_DIR}/time_series_vars``` veg indices 
      
 * 'cultionet train' trains resunet model using training params from seg0_config.sh, saves model checkpoint in  ```ckpt```   
 
