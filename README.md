@@ -24,8 +24,8 @@
  
    
 #### <b>seg0_config</b>     
-* splits training digitizations -- polys and chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```  
-* copies cultionetTEMP template from seg_utils folder to  ```{VERSION_DIR}```   
+* splits training digitizations -- field digitization polys and region chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```   
+* copies ```~/code/bash/seg_utils/cultionetTEMP/``` to user's input ```{VERSION_DIR}``` from seg0_config.sh, on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage       
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS</b>    
