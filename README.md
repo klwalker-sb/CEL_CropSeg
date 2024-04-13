@@ -8,7 +8,7 @@
 3. run seg0-seg5, only updating #SBATCH --array GRID_ID in seg1 & seg3   
 </b> 
 
-> cd ~/code/bash
+> cd ~/code/bash   
 > git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
 > mv CEL_CropSeg/* . ## move files from this repo into current directory      
 > rm -r CEL_CropSeg ## delete empty directory (y...)       
