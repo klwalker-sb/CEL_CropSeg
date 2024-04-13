@@ -22,9 +22,7 @@ MMDD="07-01" ##AI4B EU: "01-01" ##PY: "07-01"
 
 ## veg indices to use  
 VIs=["kndvi","gcvi","nbr","ndmi"]
-VI_list=${VIs//","/" "}
-VI_list=${VI_list/"["/"("}
-VI_list=${VI_list/"]"/")"}
+
 
 ## csv with list of UNQ cells to run inference predictions on -- must have 'id' column 
 UNQ_pred_list="/home/downspout-cel/paraguay_lc/Segmentations/FebSampCells.csv"  
@@ -58,6 +56,13 @@ SEED=100
 ## EO requires 1 threshold in a list, threshold requires 2, watershed requires 3 
 instance_method="EO" 
 thresholds=[8.5]
+
+
+## reformat VIs for reading list into seg1 bash script instead of python script -- replace commas for spaces, brackets for parentheses     
+VI_list=${VIs//","/" "}
+VI_list=${VI_list/"["/"("}
+VI_list=${VI_list/"]"/")"}
+
 
 cd ~/
 source .bashrc
