@@ -1,16 +1,5 @@
 #### CREATE CULTIONET ENVIRONMENT  
-> conda create --name .cnet38 python=3.8  
-> conda activate .cnet38   
-> conda config --add channels conda-forge  
-> conda config --set channel_priority strict  
-> conda install cython>=0.29.* numpy<=1.21.0  
-> pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113 --no-cache-dir    
-> python -c "import torch;print(torch.cuda.is_available())" # GPU check: True if cuda/GPU is available. if False, make sure you're not on bellows  
-> pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric torch-geometric-temporal  --extra-index-url https://data.pyg.org/whl/torch-1.12.1%2Bcu113.html --no-cache-dir  
-> conda install -c conda-forge gdal  
-> pip install cultionet@git+https://github.com/jgrss/cultionet.git  
-> cultionet train -h #### cultionet install check
-
+> conda create --name .cultionet38 python=3.8  ## .cultionet38 virtual environment called in bash scripts   
 see [cultionet repo](https://github.com/jgrss/cultionet) for training data & config file requirements  
 
 ## STEPS TO CREATE CROP FIELD INSTANCES & FIELD SIZE METRICS  
