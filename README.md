@@ -19,11 +19,11 @@ see [cultionet repo](https://github.com/jgrss/cultionet) for training data & con
 3. run seg0-seg5, only updating #SBATCH --array GRID_ID in seg1 & seg3   
 </b> 
 
-> cd ~/
-> git clone https://github.com/laurensharwood/CEL_CropSeg.git  
-> mv -r CEL_CropSeg/* ~/code/bash  
-> rm -r CEL_CropSeg  
-> cd ~/code/bash  
+> cd ~/    
+> git clone https://github.com/laurensharwood/CEL_CropSeg.git    
+> mv -r CEL_CropSeg/* ~/code/bash   
+> rm -r CEL_CropSeg    
+> cd ~/code/bash   
 > ##### update seg0_config version parameters   
 > vim seg0_config.sh  
 > sbatch seg0_config.sh   
@@ -37,7 +37,7 @@ see [cultionet repo](https://github.com/jgrss/cultionet) for training data & con
 
  
    
-#### <b>seg0_config/b>     
+#### <b>seg0_config</b>     
 * splits training digitizations -- polys and chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```  
 * copies cultionetTEMP template from seg_utils folder to {VERSION_DIR}    
 * updates {VERSION_DIR}/config_cultionet.yml using seg0_config.sh settings         
