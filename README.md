@@ -6,6 +6,11 @@
 <b>1. copy files from this repo into ```~/code/bash```   
 2. fill out seg0_config.sh file with version settings   
 3. run seg0-seg5, only updating #SBATCH --array GRID_ID in seg1 & seg3   
+
+recreate .sh files with vim:   
+```sbatch: error: Batch script contains DOS line breaks (\r\n)
+sbatch: error: instead of expected UNIX line breaks (\n).```
+
 </b> 
 
 > cd ~/code/bash   
