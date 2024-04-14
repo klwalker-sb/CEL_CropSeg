@@ -104,3 +104,15 @@ def reclassify_raster(raster_path, old_new, out_dir):
                 dst.write(new_arr, indexes=1)
             print(new_name)
 
+
+
+import pyproj
+from pyproj import Proj
+from pyproj import transformer 
+from pyproj import CRS
+
+def transform_point_coords(inepsg, outepsg, XYcoords):
+    x2,y2 = pyproj.transformer.transform(Proj(init=inepsg), Proj(init=outepsg), XYcoords[1], XYcoords[0])
+    return (x2,y2)
+
+
