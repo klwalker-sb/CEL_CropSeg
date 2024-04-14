@@ -15,17 +15,17 @@ sbatch: error: instead of expected UNIX line breaks (\n).
 
 
 ```
-> cd ~/code/bash   
-> git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
-> mv CEL_CropSeg/* . ## move files from this repo into current directory      
-> rm -r CEL_CropSeg ## delete empty directory (y...)       
-> vim seg0_config.sh ## update version parameters      
-> sbatch seg0_config.sh  
-> sbatch seg1_prepTrain_TS.sh ## update #SBATCH --array GRID_ID for training chip regions to prep     
-> sbatch seg2_cnetTrain.sh   
-> sbatch seg3_cnetPredict.sh ## update #SBATCH --array GRID_ID for prediction grid cells to predict    
-> sbatch sbatch seg4_fieldMetrics.sh  
-> sbatch sbatch seg5_chipAcc.sh   
+cd ~/code/bash   
+git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
+mv CEL_CropSeg/* . ## move files from this repo into current directory      
+rm -r CEL_CropSeg ## delete empty directory (y...)       
+vim seg0_config.sh ## update version parameters      
+sbatch seg0_config.sh  
+sbatch seg1_prepTrain_TS.sh ## update #SBATCH --array GRID_ID for training chip regions to prep     
+sbatch seg2_cnetTrain.sh   
+sbatch seg3_cnetPredict.sh ## update #SBATCH --array GRID_ID for prediction grid cells to predict    
+sbatch sbatch seg4_fieldMetrics.sh  
+sbatch sbatch seg5_chipAcc.sh   
 ```  
 
  
