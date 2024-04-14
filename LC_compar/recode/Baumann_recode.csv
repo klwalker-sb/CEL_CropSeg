@@ -1,0 +1,12 @@
+old,name,new
+1,Woodlands,3
+2,All other types of (semi-)natural vegetation,4
+3,Cropland,1
+4,Pasture,2
+5,Other,4
+20,Disturbed woodlands (labeled as deforested but without pasture/cropland use),4
+21,Natural grasslands,2
+22,(Palm) Savannas,3
+23,Wet Grasslands,2
+6,Water,4
+24,Unknown,4

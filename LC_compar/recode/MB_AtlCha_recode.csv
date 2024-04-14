@@ -1,0 +1,47 @@
+old,name,new
+1,Forest,3
+2,Natural Forest,3
+3,Forest Formation,3
+4,Savanna Formation,3
+5,Magrove,3
+6,Áreas Naturales Inundables - Leñosas (Bosque Inundable),3
+9,Forest Plantation,3
+10,Non Forest Natural Formation,4
+11,Wetland,2
+12,"Grassland (Pastizal, Formación Herbácea)",2
+13,Other Non Forest Natural Formation,4
+14,Farming,1
+15,Pasture,2
+18,Agriculture,1
+19,Temporary Crops (Herbaceas - Agricultura),1
+20,Sugar Cane,1
+21,Mosaic of Agriculture and Pasture,1
+22,Non vegetated area,4
+23,Beach and Dune,4
+24,Urban Infrastructure,4
+25,Other Non Vegetated Area,4
+26,Water,4
+27,Non Observed,4
+29,Rocky outcrop,4
+30,Mining,4
+31,Aquaculture,4
+32,Salt flat,4
+33,"River, Lake and Ocean",4
+34,Glacier,4
+35,Oil Palm,1
+36,Perennial Crops,1
+37,Artificial Water Body,4
+38,Water Reservoirs,4
+39,Soy Beans,1
+40,Rice,1
+41,Mosaic of Crops,1
+42,Pastizal abierto,2
+43,Pastizal cerrado,2
+44,Pastizal disperso,2
+45,Leñosas dispersas,3
+46,Coffe,1
+47,Citrus,1
+48,Other Perennial Crops,1
+49,Wooded Sandbank Vegetation,4
+50,Herbaceous Sandbank Vegetation,4
+57,Cultivo Simples,1

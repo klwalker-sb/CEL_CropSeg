@@ -1,0 +1,12 @@
+old,name,new
+10,Tree cover,3
+20,Shrubland,4
+30,Grassland,2
+40,Cropland,1
+50,Built-up,4
+60,Bare / sparse vegetation,4
+70,Snow and Ice,4
+80,Permanent water bodies,4
+90,Herbaceous wetland,2
+95,Mangroves,3
+100,Moss and lichen,4

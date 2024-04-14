@@ -1,0 +1,19 @@
+old,name,new
+1,Woody Natural Vegetation,3
+3,Closed Natural Woodlands,3
+4,Open Natural Woodlands,3
+6,Flooded Natural Woodlands,3
+10,Herbaceous Natural Vegetation,2
+11,Flooded grasslands,2
+12,Grassland,2
+14,Agricultural Areas,1
+15,Pasture,2
+18,Agriculture,1
+9,Forest Plantation,3
+22,Non vegetated area,4
+26,Water,4
+33,River or Lake,4
+27,Not observed,4
+19,Temporary Crops (Herbaceas - Agricultura),1
+65,unknown,4
+36,Perennial Crop,1
