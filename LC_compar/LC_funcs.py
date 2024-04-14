@@ -111,6 +111,10 @@ from pyproj import Proj
 from pyproj import transformer 
 from pyproj import CRS
 
+import warnings
+warnings.filterwarnings('ignore')
+
+
 def transform_point_coords(inepsg, outepsg, XYcoords):
     x2,y2 = pyproj.transformer.transform(Proj(init=inepsg), Proj(init=outepsg), XYcoords[1], XYcoords[0])
     return (x2,y2)
