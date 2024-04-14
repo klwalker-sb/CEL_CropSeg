@@ -13,7 +13,6 @@ from rasterio.windows import Window
 from rasterio.features import shapes, coords
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from shapely.geometry import box, Polygon
-from osgeo import gdal
 from datetime import datetime
 
 ###############################################
@@ -199,7 +198,7 @@ def ready_regions(version_dir, vi_list=["evi2", "gcvi", "wi"]):
 
 def file_to_copy(ImgDir, EndYr, MMDD):
     StartYr = EndYr - 1
-    ts = pd.Timestamp(year=StartYr,  month=int(MMDD.split("-")[0]),   day=int(MMDD.split("-")[1])) 
+    ts = pd.Timestamp(year=StartYr,  month=int(MMDD[:2]),   day=int(MMDD[-2:])) 
     start_jd = ts.timetuple().tm_yday
     ## all images in grid/brdf_ts/ms/VI folder that start with the StartYr or EndYr (i.e. 2020 or 2021)
     all_images = [i for i in sorted(os.listdir(ImgDir)) if (i.startswith(str(StartYr)) | i.startswith(str(EndYr)))]
@@ -263,4 +262,4 @@ def update_yml(yml_path, param_value_dict):
         value[key] = param_value_dict[key]
     
     with open(yml_path, 'w') as file:
-        yaml.dump(value, file)        
+        yaml.dump(value, file, sort_keys=False)        
