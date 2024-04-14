@@ -9,14 +9,12 @@
 </b> 
 
 recreate .sh files with vim:   
+sbatch: error: Batch script contains DOS line breaks (\r\n)   
+sbatch: error: instead of expected UNIX line breaks (\n).   
+
+
+
 ```
-sbatch: error: Batch script contains DOS line breaks (\r\n)
-sbatch: error: instead of expected UNIX line breaks (\n).
-```  
-
-
-
-
 > cd ~/code/bash   
 > git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
 > mv CEL_CropSeg/* . ## move files from this repo into current directory      
@@ -28,6 +26,7 @@ sbatch: error: instead of expected UNIX line breaks (\n).
 > sbatch seg3_cnetPredict.sh ## update #SBATCH --array GRID_ID for prediction grid cells to predict    
 > sbatch sbatch seg4_fieldMetrics.sh  
 > sbatch sbatch seg5_chipAcc.sh   
+```  
 
  
    
