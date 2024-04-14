@@ -17,7 +17,7 @@ grd = sys.argv[1]
 VERS_DIR = sys.argv[2]
 YEAR = int(sys.argv[3])
 MMDD=sys.argv[4]
-VI_list = sys.argv[5][1:-1].replaceAll(" ", "").split(",") 
+VI_list = sys.argv[5][1:-1].split(",") 
 PROJ_DIR=sys.argv[6]
 
 if "AI4Boundaires" not in PROJ_DIR:
@@ -31,7 +31,7 @@ def main():
                 spec_index=VI, 
                 proj_stac_dir=PROJ_DIR, 
                 version_dir=VERS_DIR, 
-                mmdd=MM_DD, 
+                mmdd=MMDD, 
                 end_yr=PRED_YR)
 
 if __name__ == "__main__":
