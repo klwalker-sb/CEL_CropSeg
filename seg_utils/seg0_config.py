@@ -13,7 +13,7 @@ def main():
     END_YR=sys.argv[2]
     TRAINING_POLYS = sys.argv[3]
     VIs=sys.argv[4]
-    local_path - "~/code/bash" ##os.path.join( __file__.replace(os.path.basename( __file__), ""), "cultionetTEMP")
+    local_path = os.path.join( __file__.replace(os.path.basename( __file__), ""), "cultionetTEMP")
     
     ## 0) do in template folder once, then skip once its filled out and copy files into new version directory where testing of bands or new years are done
     user_train_dir =  os.path.join(local_path, "user_train")
