@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 import geemap
 import ee
-from osgeo import gdal
+from sklearn.metrics import confusion_matrix
 
 ee.Initialize()
 ee.Authenticate()
