@@ -30,9 +30,9 @@ sbatch: error: instead of expected UNIX line breaks (\n).
 
 #### <b>seg0_config.sh</b>     
 <b>USER INPUT: update   
-a) ```{VERSION_DIR}```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
-b) ```{END_YR}```: prediction year  
-c) ```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses) </b>   
+a) ```VERSION_DIR```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
+b) ```END_YR```: prediction year  
+c) ```VI_array```: list of VIs to use in (bash array form with spaces and parentheses) </b>   
 * splits training digitizations -- field digitization polys and region chips --  by region into ```{VERSION_DIR}/user_train```   
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
