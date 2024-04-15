@@ -6,7 +6,7 @@
 #SBATCH -o PY3n.%N.%a.%j.out # STDOUT
 #SBATCH -e PY3n.%N.%a.%j.err # STDERR
 #SBATCH --job-name="PY3n"
-#SBATCH --array=[001]%1
+#SBATCH --array=[000]%1
 
 
 ####################################
@@ -36,17 +36,16 @@ GRID_ID=$(($SLURM_ARRAY_TASK_ID + 3000))
 ## set parameters in seg0_config.sh
 source seg0_config.sh
 
-PRED_PREFIX="PY_" ## "EUctrl_" ## "PYctrl_" ## "PYtsfr_"
-
 REGION=00${GRID_ID} ## change REGION to save only smaller chip, will look in time_series_vars dir but the images are already copied  
 
 CONFIG_FILE="${VERSION_DIR}/config_cultionet.yml"
 OUT_FILE="${VERSION_DIR}/composites_probas/pred_${PRED_PREFIX}${GRID_ID}.tif"
-REF_IMG="{VERSION_DIR}/time_series_vars/${REGION}/brdf_ts/ms/${VIs[1],,}/${END_YR}001.tif"
+REF_IMG="${VERSION_DIR}/time_series_vars/${REGION}/brdf_ts/ms/${VI_array[1],,}/${END_YR}001.tif"
+
 cd ~/
 conda activate .cultionet38
 
-python ~/code/bash/seg_utils/cnet_cp_predTS.py $GRID_ID $VERSION_DIR $END_YR $MMDD $VIs $PROJECT_DIR
+python ~/code/bash/seg_utils/cnet_cp_predTS.py $GRID_ID $VERSION_DIR $END_YR $MMDD $VIstring $PROJECT_DIR
 
 cd $VERSION_DIR/
 

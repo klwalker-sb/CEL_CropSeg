@@ -10,8 +10,14 @@
 ####Set permissions of output files:
 umask 002
 
+
+
+
 ## set parameters in seg0_config.sh
 source seg0_config.sh
+
+
+
 
 cd ~/
 source .bashrc

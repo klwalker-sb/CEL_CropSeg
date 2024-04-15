@@ -18,7 +18,7 @@ source seg0_config.sh
 
 cd ~/
 conda activate .cultionet38
-python code/bash/seg_utils/seg4_fieldMetrics.py $instance_method $thresholds $VERSION_DIR $grid_file
+python code/bash/seg_utils/seg4_fieldMetrics.py $INSTANCE_METHOD $CUTOFFstr $VERSION_DIR $GRID_FILE $PRED_PREFIX
 conda deactivate
 
 

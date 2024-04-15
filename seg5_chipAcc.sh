@@ -18,7 +18,7 @@ source seg0_config.sh
 
 cd ~/
 conda activate .cultionet38
-python code/bash/seg_utils/seg5_chipAcc.py $VERSION_DIR $instance_method $thresholds $training_polys
+python code/bash/seg_utils/seg5_chipAcc.py $VERSION_DIR $INSTANCE_METHOD $CUTOFFstr $TRAINING_POLYS $ACCURACY_ID_FILE $OUT_ACC_DIR
 conda deactivate
 
 
