@@ -8,12 +8,6 @@
 3. run seg0-seg5, only updating #SBATCH --array GRID_ID in seg1 & seg3   
 </b> 
 
-recreate .sh files with vim:   
-sbatch: error: Batch script contains DOS line breaks (\r\n)   
-sbatch: error: instead of expected UNIX line breaks (\n).   
-
-
-
 ```
 cd ~/code/bash   
 git clone https://github.com/laurensharwood/CEL_CropSeg.git ## copy files from this repo locally      
@@ -26,6 +20,12 @@ sbatch seg2_cnetTrain.sh
 sbatch seg3_cnetPredict.sh ## update #SBATCH --array GRID_ID for prediction grid cells to predict    
 sbatch sbatch seg4_fieldMetrics.sh  
 sbatch sbatch seg5_chipAcc.sh   
+```  
+
+Note: If you see the following error while trying to run a bash script... copy contents of the .sh file and recreate on the cluster using vim:   
+```
+sbatch: error: Batch script contains DOS line breaks (\r\n)   
+sbatch: error: instead of expected UNIX line breaks (\n).   
 ```  
 
  
