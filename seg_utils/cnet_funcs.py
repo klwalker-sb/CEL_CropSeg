@@ -15,6 +15,22 @@ from rasterio.warp import calculate_default_transform, reproject, Resampling
 from shapely.geometry import box, Polygon
 from datetime import datetime
 
+
+
+import yaml
+
+
+def update_yml(yml_path, param_value_dict):
+    with open(yml_path, 'r') as file:
+        value = yaml.safe_load(file)
+    for key in param_value_dict:
+        value[key] = param_value_dict[key]
+    
+    with open(yml_path, 'w') as file:
+        yaml.dump(value, file, sort_keys=False)        
+
+
+
 ###############################################
 
 
@@ -251,15 +267,3 @@ def copy_pred_grid(grid, spec_index, proj_stac_dir, version_dir, mmdd, end_yr):
 
 ###############################################
 
-
-import yaml
-
-
-def update_yml(yml_path, param_value_dict):
-    with open(yml_path, 'r') as file:
-        value = yaml.safe_load(file)
-    for key in param_value_dict:
-        value[key] = param_value_dict[key]
-    
-    with open(yml_path, 'w') as file:
-        yaml.dump(value, file, sort_keys=False)        

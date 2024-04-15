@@ -17,7 +17,7 @@ grd = sys.argv[1]
 VERS_DIR = sys.argv[2]
 YEAR = int(sys.argv[3])
 MMDD=sys.argv[4]
-VI_list = sys.argv[5][1:-1].split(",") 
+VI_list = sys.argv[5].split(",") 
 PROJ_DIR=sys.argv[6]
 
 if "AI4Boundaires" not in PROJ_DIR:
