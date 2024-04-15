@@ -30,14 +30,14 @@ sbatch: error: instead of expected UNIX line breaks (\n).
 
 #### <b>seg0_config.sh</b>     
 USER INPUT: update   
-```{VERSION_DIR}```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
-```{END_YR}```: prediction year  
-```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses)  
+a) ```{VERSION_DIR}```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
+b) ```{END_YR}```: prediction year  
+c) ```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses)  
 * splits training digitizations -- field digitization polys and region chips --  by region into ```{VERSION_DIR}/user_train```   
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS.sh</b>    
-USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells that have training digitizations                
+a) USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells that have training digitizations                
 * for each UNQ GRID_ID that contains a 1km training chip, saves time-series in ```{VERSION_DIR}/time_series_vars/{REGION}``` -- clip to chip shape, named {REGION}, or clips and mosaics images where 1km chip region overlaps w/ more than one 20km x 20km processing GRID_ID cell        
 
 #### <b>seg2_cnetTrain.sh</b>    
@@ -46,7 +46,7 @@ USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells that 
 * 'cultionet train' trains resunet model using training params from seg0_config.sh, saves model checkpoint in  ```ckpt```   
 
 #### <b>seg3_cnetPredict.sh</b>     
-USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells to run inference on               
+a) USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells to run inference on               
 * copies time-series for 20km x 20km UNQ GRID_ID cells into ```{VERSION_DIR}/time_series_vars/00{GRID_ID}/brdf_ts/ms/{VI}```       
 * 'cultionet create-predict' saves pytorch prediction files for each 20km UNQ GRID_ID cell in #SBATCH --array in ```{VERSION_DIR}/data/predict/processed```   
 * 'cultionet predict' runs inference on UNQ GRID_ID cells, save 4band predictions in ```{VERSION_DIR}/composites_probas``` where b1=crop extent probability, b2=distance to border, b3=border probability, and b4 is blank     
