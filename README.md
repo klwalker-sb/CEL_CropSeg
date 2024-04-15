@@ -53,7 +53,7 @@ c) ```VI_array```: list of VIs to use in (bash array form with spaces and parent
 
 #### <b>sbatch seg4_fieldMetrics.sh</b>    
 * saves five single-band raster features in ```{VERSION_DIR}/feats_{METHOD}_{CUTOFF}``` and vectors of field instances in  ```{VERSION_DIR}/infer_polys_{METHOD}_{CUTOFF}```    
-* saves single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```    
+* save single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```    
 * create vectors of crop field instances in  ```{VERSION_DIR}/infer_polys```. _merged.gpkg contains all grids and is used to calculate field size attributes -- 3:area, 4:area/perimeter(APR), 5:texture(seasonal stDev) -- then convert those attributes to rasters in ```{VERSION_DIR}/feats```    
 
 #### <b>sbatch seg5_chipAcc.sh</b>    
