@@ -34,7 +34,7 @@ USER INPUT: update
 ```{END_YR}```: prediction year  
 ```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses)  
 ```{UNQ_pred_list}```: list of UNQ GRID_IDs to create features for crop classification   
-* splits training digitizations -- field digitization polys and region chips --  by region into ``{VERSION_DIR}/user_train```   
+* splits training digitizations -- field digitization polys and region chips --  by region into ```{VERSION_DIR}/user_train```   
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS</b>    
