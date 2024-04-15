@@ -13,7 +13,8 @@ def main():
     project_directory=sys.argv[3], 
     version_dir=sys.argv[4], 
     grid_file=sys.argv[5], 
-    end_yr=int(sys.argv[6])
+    end_yr=int(sys.argv[6]),
+    MMDD=sys.argv[7]
     )
 
 

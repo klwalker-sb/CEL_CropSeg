@@ -17,7 +17,7 @@ import math
 
 import cnet_funcs as cf
 
-def chip_acc(predPoly_dir, pred_prefix, RefShp, class_col="class", crop_classes=[1]):
+def chip_acc(predPoly_dir, pred_prefix, RefShp, class_col="class", crop_classes=[1], acc_id_file, out_acc_dir):
     print(predPoly_dir)
     
     RefPolys = gpd.read_file(RefShp) ## pred vector file 
@@ -94,8 +94,8 @@ def chip_acc(predPoly_dir, pred_prefix, RefShp, class_col="class", crop_classes=
     noCrops_df = pd.DataFrame(all_chips_noCrops, columns=["region", "version", "numFields", "avgArea", "totalCropArea"])
     all_chips_df = pd.concat([wCrops_df, noCrops_df])
     
-    NovSampCells=pd.read_csv("/home/downspout-cel/paraguay_lc/Segmentations/NovSampCells.csv")
-    keep_grids = sorted(NovSampCells['id'].to_list())
+    holdout_cells=pd.read_csv(acc_id_file)
+    keep_grids = sorted(holdout_cells['id'].to_list())
     done_regions = [i for i in all_chips_df['region']]
     keep_regions = [i for i in done_regions if int(str(i)[:4]) in keep_grids]   
     wCrops_df=wCrops_df[wCrops_df['region'].isin(keep_regions)]
@@ -105,7 +105,7 @@ def chip_acc(predPoly_dir, pred_prefix, RefShp, class_col="class", crop_classes=
     noCrops_df['version'] = [i+"_noCrops" for i in noCrops_df['version']]    
     
     all_chips_df = pd.concat([wCrops_df, noCrops_df])
-    out_name = os.path.join("/home/l_sharwood/code/cnet_scripts/accuracy/", "chip_acc_"+pred_prefix+"_allRegions_"+str(len(all_chips_df))+".csv")
+    out_name = os.path.join(out_acc_dir, "chip_acc_"+pred_prefix+"_allRegions_"+str(len(all_chips_df))+".csv")
     all_chips_df.to_csv(out_name)
     
     wCrop_grouped = wCrops_df.groupby(["version"])[["numFields", "avgArea", "totalCropArea"]].mean()

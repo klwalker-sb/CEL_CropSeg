@@ -9,30 +9,17 @@ from pathlib import Path
 import shutil
 from datetime import datetime
 
-
 import cnet_funcs as cf
 
 
-grd = sys.argv[1]
-VERS_DIR = sys.argv[2]
-YEAR = int(sys.argv[3])
-MMDD=sys.argv[4]
-VI_list = sys.argv[5].split(",") 
-PROJ_DIR=sys.argv[6]
-
-if "AI4Boundaires" not in PROJ_DIR:
-    PRED_YR = YEAR
-else:
-    PRED_YR = 2020
-
 def main():
-    for VI in VI_list:
-        cf.copy_pred_grid(grid=grd, 
+    for VI in sys.argv[5].split(","):
+        cf.copy_pred_grid(grid=sys.argv[1], 
                 spec_index=VI, 
-                proj_stac_dir=PROJ_DIR, 
-                version_dir=VERS_DIR, 
-                mmdd=MMDD, 
-                end_yr=PRED_YR)
+                proj_grid_dir=sys.argv[6], 
+                version_dir=sys.argv[2], 
+                mmdd=sys.argv[4], 
+                end_yr=int(sys.argv[3]))
 
 if __name__ == "__main__":
     main()

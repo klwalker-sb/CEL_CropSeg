@@ -36,8 +36,7 @@ def update_yml(yml_path, param_value_dict):
 
 def prep_user_train(training_digitizations, user_train_dir, end_yr):
     class_col = "class"
-
-
+    
     polys = gpd.read_file(training_digitizations, mode="r")
     chips = gpd.read_file(training_digitizations.replace("_Polys", "_Chips"),  mode="r")
     proj_crs = polys.crs
@@ -78,29 +77,25 @@ def prep_user_train(training_digitizations, user_train_dir, end_yr):
 
 ###############################################
 
-def clip_chip(grid_num, spec_index, project_directory, version_dir, grid_file, end_yr):
+def clip_chip(grid_num, spec_index, project_directory, version_dir, grid_file, end_yr, MMDD):
     names = [i.replace("_poly_"+str(end_yr)+".gpkg", "") for i in os.listdir(os.path.join(version_dir, "user_train")) if ("_grid_" not in i and i.startswith(grid_num))] 
     print(names)
     chip_list = [str(i)+"_grid_"+str(end_yr)+".gpkg" for i in names]
     for chip in chip_list:
         chip_num = int(chip.split("_")[0])
         chip_clip_shape = gpd.read_file(os.path.join(version_dir, "user_train", chip))
-        bounds = (float(chip_clip_shape.bounds['minx']), float(chip_clip_shape.bounds['maxx']), float(chip_clip_shape.bounds['miny'] ), float(chip_clip_shape.bounds['maxy']))
+        
+        bounds = (float(chip_clip_shape.bounds.iloc[0]['minx']), float(chip_clip_shape.bounds.iloc[0]['maxx']), float(chip_clip_shape.bounds.iloc[0]['miny'] ), float(chip_clip_shape.bounds.iloc[0]['maxy']))
         rast_dir=os.path.join(project_directory,  str(grid_num).zfill(6), "brdf_ts", "ms", spec_index)
         print(rast_dir)
         
 
         if os.path.exists(rast_dir):
-            
-            if "LUCinLA" in grid_file:
-                month_day = "06-01"
-            elif "AI4B" in grid_file:
-                month_day = "01-01"
-                
+       
             ## check that the VI folder was made after 7/15/2023 
             dd_made, mm_made, yyyy_made = datetime.fromtimestamp(os.path.getctime(rast_dir)).strftime("%d-%m-%Y").split("-")
             if (int(yyyy_made)>2023) or (int(yyyy_made)==2023 and int(mm_made) >=7) or "AI4Boundaries" not in project_directory: ##or  (int(yyyy_made)==2023 and int(mm_made) == 7 and int(dd_made) > 15)
-                rast_list = file_to_copy(ImgDir=rast_dir, EndYr=end_yr, MMDD=month_day) ###### LIST OF FILES ## ENTER START YEAR AND START DATE
+                rast_list = file_to_copy(ImgDir=rast_dir, EndYr=end_yr, MMDD=MMDD) ###### LIST OF FILES ## ENTER START YEAR AND START DATE
 
                 for rast in sorted(rast_list):
                     with rio.open(rast, 'r') as src:
@@ -126,15 +121,15 @@ def clip_chip(grid_num, spec_index, project_directory, version_dir, grid_file, e
                                 both_grids = chip_within_grids.UNQ.to_list()
                                 print(both_grids)
                                 grid_folder1 = os.path.join(project_directory, str(both_grids[0]).zfill(6),"brdf_ts", "ms", str(spec_index))
-                                raster1 = os.path.join(grid_folder1, rast.split("/")[-1])                            
+                                raster1 = os.path.join(grid_folder1, os.path.basename(rast))                            
                                 if len(both_grids) == 2:
                                     grid_folder2 = os.path.join(project_directory, str(both_grids[1]).zfill(6),"brdf_ts", "ms", str(spec_index)) 
-                                    raster2 = os.path.join(grid_folder2, rast.split("/")[-1])
+                                    raster2 = os.path.join(grid_folder2, os.path.basename(rast))
                                     mosaic_list = [raster1, raster2]
                                 else:
                                     mosaic_list = [raster1]
 
-                                grid_mosaic=os.path.join(out_dirF, "tmp_mos_"+str(rast.split("/")[-1])+".vrt")
+                                grid_mosaic=os.path.join(out_dirF, "tmp_mos_"+os.path.basename(rast)+".vrt")
                                 gdal.BuildVRT(grid_mosaic, mosaic_list)
                                 # read in window of chip bounds 
                                 with rio.open(grid_mosaic) as src2:
@@ -176,9 +171,7 @@ def windowed_read(gt, bbox):
 
 
 def ready_regions(version_dir, vi_list=["evi2", "gcvi", "wi"]):
-    if type(vi_list)==str:
-        vi_list = vi_list[1:-2].split(",")
-    
+
     time_series_dir = os.path.join(version_dir, "time_series_vars")
     user_train_regions = os.listdir(time_series_dir)
     not_ready = []
@@ -195,7 +188,7 @@ def ready_regions(version_dir, vi_list=["evi2", "gcvi", "wi"]):
                  #   print(str(rgn)+' does not have 13 images of ' + str(vi))
                     not_ready.append(str(rgn)+"_"+str(vi))
                  #   print(rgn)
-    regions_not_ready = list(set([i for i in not_ready]))
+    regions_not_ready = list(set([i.split("_")[0] for i in not_ready]))
     ready = sorted([i for i in user_train_regions if i not in regions_not_ready])
     config_file = os.path.join(version_dir, "config_cultionet.yml")
     ## save file for user_train_regions that are ready (for the config file)
@@ -208,7 +201,13 @@ def ready_regions(version_dir, vi_list=["evi2", "gcvi", "wi"]):
             txt.write(rdy+"\n")       
     txt.close()
 
-
+    ## create holdout list for accuracy assessment from chips that weren't used in model training bcuz they had incomplete TS
+    txt_holdout = open(chip_file.replace(".txt", "_holdout.txt"), 'w')
+    txt_holdout.write("id"+"\n")     
+    for incomplete_TS in regions_not_ready:
+        if not incomplete_TS.startswith("."):
+            txt_holdout.write(incomplete_TS+"\n")       
+    txt_holdout.close()
 
 ###############################################
 
@@ -226,36 +225,36 @@ def file_to_copy(ImgDir, EndYr, MMDD):
 
 
 ## for before predict bash script
-def copy_pred_grid(grid, spec_index, proj_stac_dir, version_dir, mmdd, end_yr):
+def copy_pred_grid(grid, spec_index, proj_grid_dir, version_dir, MMDD, end_yr):
 
-    in_dir = os.path.join(proj_stac_dir, str(grid).zfill(6), "brdf_ts", "ms", str(spec_index))
+    in_dir = os.path.join(proj_grid_dir, str(grid).zfill(6), "brdf_ts", "ms", str(spec_index))
     if not os.path.exists(in_dir):
         print(grid, 'missing time series for ', str(spec_index))
     else:
         ## check that the VI folder was made after 7/15/2023 
         dd_made, mm_made, yyyy_made = datetime.fromtimestamp(os.path.getctime(in_dir)).strftime("%d-%m-%Y").split("-")
-       ### if (int(yyyy_made)>2023) or (int(yyyy_made)==2023 and int(mm_made) >=7) or "AI4Boundaries" not in proj_stac_dir : ##or  (int(yyyy_made)==2023 and int(mm_made) == 7 and int(dd_made) > 15)
+       ### if (int(yyyy_made)>2023) or (int(yyyy_made)==2023 and int(mm_made) >=7) or "AI4Boundaries" not in proj_grid_dir : ##or  (int(yyyy_made)==2023 and int(mm_made) == 7 and int(dd_made) > 15)
         out_dir = os.path.join(str(version_dir), "time_series_vars", str(grid).zfill(6), "brdf_ts", "ms", str(spec_index))
 
         ## check that there are 13 files to move 
-        move = file_to_copy(ImgDir=in_dir, EndYr=end_yr, MMDD=mmdd)
+        move = file_to_copy(ImgDir=in_dir, EndYr=end_yr, MMDD=MMDD)
         if len(move) != 13:
             print('there should be 13 time series images to move in '+in_dir)
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
             for fi in move:
-                out_fi = os.path.join(out_dir, fi.split("/")[-1])
+                out_fi = os.path.join(out_dir, os.path.basename(fi))
                 if not os.path.exists(out_fi):
                     copyfile(fi, out_fi)   
 
         elif os.path.exists(out_dir):
-            if sorted(os.listdir(out_dir)) == sorted([i.split("/")[-1] for i in move]):
+            if sorted(os.listdir(out_dir)) == sorted([os.path.basename(i) for i in move]):
               #  print('grid time series images already moved into '+str(out_dir))
                 pass
             elif len(os.listdir(out_dir)) == 0:
                 for fi in move:
-                    out_fi = os.path.join(out_dir, fi.split("/")[-1])
+                    out_fi = os.path.join(out_dir, os.path.basename(fi))
                     if not os.path.exists(out_fi):
                         copyfile(fi, out_fi)         
             else:

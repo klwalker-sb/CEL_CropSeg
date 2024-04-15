@@ -195,7 +195,8 @@ def SINGLE_semantic2instance(pred_dir, out_dir, instance_method, bound_thresh=0.
                 new_gt = rio.Affine(gt[0], gt[1], (gt[2] + (offset[0] * gt[0])), 0.0, gt[4], (gt[5] + (offset[1] * gt[4])))
                 dist_arr, bound_arr, ext_arr, _ = src.read(window=Window(offset[0], offset[1], offset[2], offset[3]))      
                 out_meta = src.meta.copy()
-                out_meta.update({"count": 1, "dtype":np.int16, "transform":new_gt, "width":2000, "height":2000})
+                ## read in the 2k x 2k grid shape window to remove cultionet inference edge-effects 
+                out_meta.update({"count": 1, "dtype":np.int16, "transform":new_gt, "height":dist_arr.shape[0], "width":dist_arr.shape[1]})
                 
          
         

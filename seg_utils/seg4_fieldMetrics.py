@@ -17,9 +17,10 @@ def main():
     instance_method = sys.argv[1] 
     thresholds = sys.argv[2] 
     version_dir = sys.argv[3] 
-    grid_file = sys.argv[3] 
-
-    thresh_list = thresholds[1:-1].split(",")
+    grid_file = sys.argv[4] 
+    pred_prefix = sys.argv[5]
+    
+    thresh_list = thresholds.split(",")
     params = '_'.join(thresh_list).replace(".", "pt", 3)
 
     pred_dir = os.path.join(version_dir, "composites_probas")
@@ -79,7 +80,7 @@ def main():
     for grid in grids:
         grid_bound = proc_grid[proc_grid['UNQ'] == int(grid)].geometry.iloc[0]
         polys_per_grid = gpd.clip(field_shp, grid_bound) ## making area raster from merged shape 
-        rst_fn = os.path.join(out_dir, "PY_"+str(instance_method)+"_"+str(grid)+"_"+params+"th.tif")
+        rst_fn = os.path.join(out_dir, "_".join([pred_prefix, str(instance_method), str(grid), params+"th.tif"]))
 
         ## raster to use as template
         rst = rio.open(rst_fn)
