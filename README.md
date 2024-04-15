@@ -52,7 +52,8 @@ c) ```VI_array```: list of VIs to use in (bash array form with spaces and parent
 * 'cultionet predict' runs inference on UNQ GRID_ID cells, save 4band predictions in ```{VERSION_DIR}/composites_probas``` where b1=crop extent probability, b2=distance to border, b3=border probability, and b4 is blank     
 
 #### <b>sbatch seg4_fieldMetrics.sh</b>    
-* saves single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```  
+* saves five single-band raster features in ```{VERSION_DIR}/feats_{METHOD}_{CUTOFF}``` and vectors of field instances in  ```{VERSION_DIR}/infer_polys_{METHOD}_{CUTOFF}```    
+* saves single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```    
 * create vectors of crop field instances in  ```{VERSION_DIR}/infer_polys```. _merged.gpkg contains all grids and is used to calculate field size attributes -- 3:area, 4:area/perimeter(APR), 5:texture(seasonal stDev) -- then convert those attributes to rasters in ```{VERSION_DIR}/feats```    
 
 #### <b>sbatch seg5_chipAcc.sh</b>    
