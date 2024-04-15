@@ -28,22 +28,18 @@ sbatch: error: Batch script contains DOS line breaks (\r\n)
 sbatch: error: instead of expected UNIX line breaks (\n).   
 ```  
 
-#### seg 0 - 5 descriptions  
-   
 #### <b>seg0_config</b>     
-<b>USER INPUT: update  
+USER INPUT: update   
 ```{VERSION_DIR}```:output folder  
 ```{END_YR}```: prediction year  
 ```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses)  
 ```{UNQ_pred_list}```: list of UNQ GRID_IDs to create features for crop classification   
-</b>  
 * splits training digitizations -- field digitization polys and region chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```   
 * copies ```~/code/bash/seg_utils/cultionetTEMP/``` to user's input ```{VERSION_DIR}``` from seg0_config.sh, on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage       
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS</b>    
-<b>USER INPUT:   
-update #SBATCH --array GRID_ID in bash script</b>        
+USER INPUT: update #SBATCH --array GRID_ID in bash script        
 * for each UNQ GRID_ID that contains a 1km training chip, saves time-series in ```{VERSION_DIR}/time_series_vars/{REGION}``` -- clip to chip shape, named {REGION}, or clips and mosaics images where 1km chip region overlaps w/ more than one 20km x 20km processing GRID_ID cell        
 
 #### <b>seg2_cnetTrain</b>    
@@ -52,8 +48,7 @@ update #SBATCH --array GRID_ID in bash script</b>
 * 'cultionet train' trains resunet model using training params from seg0_config.sh, saves model checkpoint in  ```ckpt```   
 
 #### <b>seg3_cnetPredict</b>     
-<b>USER INPUT:   
-update #SBATCH --array GRID_ID in bash script</b>        
+USER INPUT: update #SBATCH --array GRID_ID in bash script        
 * copies time-series for 20km x 20km UNQ GRID_ID cells into ```{VERSION_DIR}/time_series_vars/00{GRID_ID}/brdf_ts/ms/{VI}```       
 * 'cultionet create-predict' saves pytorch prediction files for each 20km UNQ GRID_ID cell in #SBATCH --array in ```{VERSION_DIR}/data/predict/processed```   
 * 'cultionet predict' runs inference on UNQ GRID_ID cells, save 4band predictions in ```{VERSION_DIR}/composites_probas``` where b1=crop extent probability, b2=distance to border, b3=border probability, and b4 is blank     
