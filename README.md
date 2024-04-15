@@ -30,12 +30,11 @@ sbatch: error: instead of expected UNIX line breaks (\n).
 
 #### <b>seg0_config</b>     
 USER INPUT: update   
-```{VERSION_DIR}```:output folder  
+```{VERSION_DIR}```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
 ```{END_YR}```: prediction year  
 ```{VI_array}```: list of VIs to use in (bash array form with spaces and parentheses)  
 ```{UNQ_pred_list}```: list of UNQ GRID_IDs to create features for crop classification   
-* splits training digitizations -- field digitization polys and region chips --  by region into ```~/code/bash/seg_utils/cultionetTEMP/user_train```   
-* copies ```~/code/bash/seg_utils/cultionetTEMP/``` to user's input ```{VERSION_DIR}``` from seg0_config.sh, on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage       
+* splits training digitizations -- field digitization polys and region chips --  by region into ``{VERSION_DIR}/user_train```   
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
 #### <b>seg1_prepTrain_TS</b>    
