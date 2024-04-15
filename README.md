@@ -58,3 +58,7 @@ e) USER INPUT: update #SBATCH --array GRID_ID to run 3k and 4k UNQ grid cells to
 
 #### <b>sbatch seg5_chipAcc.sh</b>    
 * calculate per-chip accuracy metrics compared to reference(training digitizations)       
+* compare REF chips (model training chips, so no true holdout) vs PRED chips (inference-> instance vectors)   
+    i. number of fields   
+    ii. average field area   
+    iii. total crop area   
