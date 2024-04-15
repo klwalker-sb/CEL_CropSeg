@@ -18,14 +18,14 @@ source .bashrc
 conda activate .cultionet38
 
 ## 1) create list of regions that have finished time series chips 
-python ~/code/bash/seg_utils/cnet_ready_regions.py $VERSION_DIR $VIs
+python ~/code/bash/seg_utils/cnet_ready_regions.py $VERSION_DIR $VIstring
 
 ## 2) create pytorch training dataset from 1)
 cd $VERSION_DIR/
 cultionet create --project-path . -gs 100 100 --destination train --start-date $MMDD --end-date $MMDD --config-file "${VERSION_DIR}/config_cultionet.yml" --max-crop-class 1 $EXTRA_ARGS_create
 
 ## 3) train ResUnet using pytorch training data from 2)
-cultionet train -p . --val-frac $VAL_FRAC --random-seed $SEED --batch-size $BATCH_SIZE --epochs $NUM_EPOCHS -lr $LEARNING_RATE --start-date $MMDD --end-date $MMDD -- device $CPU_GPU
+cultionet train -p . --val-frac $VAL_FRAC --random-seed $SEED --batch-size $BATCH_SIZE --epochs $NUM_EPOCHS -lr $LEARNING_RATE --start-date $MMDD --end-date $MMDD --device $CPU_GPU
 
 conda deactivate
 
