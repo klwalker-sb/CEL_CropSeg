@@ -16,13 +16,12 @@ VERSION_DIR="/home/downspout-cel/paraguay_lc/Segmentations/cnet22_4VI"
 
 
 ## segment fields from tri-monthly TS images from the July, 1 before the end year to the July, 1 of the end year  
-END_YR=2022
+END_YR=2021
 MMDD="07-01" ##AI4B EU: "01-01" ##PY: "07-01"
 
 
 ## veg indices to use  
-VIs=["kndvi","gcvi","nbr","ndmi"]
-
+VI_array=("kndvi" "gcvi" "nbr" "ndmi")
 
 ## csv with list of UNQ cells to run inference predictions on -- must have 'id' column 
 UNQ_pred_list="/home/downspout-cel/paraguay_lc/Segmentations/FebSampCells.csv"  
@@ -61,9 +60,9 @@ thresholds=[8.5]
 
 
 ## reformat VIs for reading list into seg1 bash script instead of python script -- replace commas for spaces, brackets for parentheses     
-VI_list=${VIs//","/" "}
-VI_list=${VI_list/"["/"("}
-VI_list=${VI_list/"]"/")"}
+
+
+
 
 
 cd ~/
@@ -71,4 +70,6 @@ source .bashrc
 conda activate .cultionet38
 
 ## 1) create list of regions that have finished time series chips 
-python ~/code/bash/seg_utils/seg0_config.py $VERSION_DIR $END_YR $TRAINING_POLYS $VIs
+VIstring=$(IFS=','; echo "${VI_array[*]}") ## VI_array as a string separated by commas -- for reading into python functions that need lists 
+python ~/code/bash/seg_utils/seg0_config.py $VERSION_DIR $END_YR $TRAINING_POLYS $VIstring
+
