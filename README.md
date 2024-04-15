@@ -59,7 +59,7 @@ c) ```VI_array```: list of VIs to use in (bash array form with spaces and parent
 
 #### <b>sbatch seg5_chipAcc.sh</b>    
 * calculate per-chip accuracy metrics compared to reference(training digitizations)       
-* compare REF chips (model training chips, so no true holdout) vs PRED chips (inference-> instance vectors)   
+* compare list of REF chips (currently uses training digitization chip regions not used in model training ```{VERSION_DIR}/cnet_training_regions_holdout.txt```  because time-series wasn't ready) vs PRED chips (inference-> instance vectors)   
     i. number of fields   
     ii. average field area   
     iii. total crop area   
