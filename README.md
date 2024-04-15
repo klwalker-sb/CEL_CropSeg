@@ -28,7 +28,7 @@ sbatch: error: Batch script contains DOS line breaks (\r\n)
 sbatch: error: instead of expected UNIX line breaks (\n).   
 ```  
 
-#### <b>seg0_config</b>     
+#### <b>seg0_config.sh</b>     
 USER INPUT: update   
 ```{VERSION_DIR}```:output folder on ```sandbox-cel``` scratch space or ```downspout-cel``` long-term storage          
 ```{END_YR}```: prediction year  
@@ -37,25 +37,25 @@ USER INPUT: update
 * splits training digitizations -- field digitization polys and region chips --  by region into ```{VERSION_DIR}/user_train```   
 * updates  ```{VERSION_DIR}/config_cultionet.yml ``` using seg0_config.sh settings         
 
-#### <b>seg1_prepTrain_TS</b>    
+#### <b>seg1_prepTrain_TS.sh</b>    
 USER INPUT: update #SBATCH --array GRID_ID in bash script        
 * for each UNQ GRID_ID that contains a 1km training chip, saves time-series in ```{VERSION_DIR}/time_series_vars/{REGION}``` -- clip to chip shape, named {REGION}, or clips and mosaics images where 1km chip region overlaps w/ more than one 20km x 20km processing GRID_ID cell        
 
-#### <b>seg2_cnetTrain</b>    
+#### <b>seg2_cnetTrain.sh</b>    
 * saves list of regions that have completed time series as cnet_training_regions.txt, which is used by config_cultionet.yml in the following step   
 * 'cultionet create' makes pytorch (.pt) training for each chip in ```{VERSION_DIR}/data/train/processed``` referencing config_cultionet.yml, ```{VERSION_DIR}/user_train``` chips & polys, and ```{VERSION_DIR}/time_series_vars``` veg indices  
 * 'cultionet train' trains resunet model using training params from seg0_config.sh, saves model checkpoint in  ```ckpt```   
 
-#### <b>seg3_cnetPredict</b>     
+#### <b>seg3_cnetPredict.sh</b>     
 USER INPUT: update #SBATCH --array GRID_ID in bash script        
 * copies time-series for 20km x 20km UNQ GRID_ID cells into ```{VERSION_DIR}/time_series_vars/00{GRID_ID}/brdf_ts/ms/{VI}```       
 * 'cultionet create-predict' saves pytorch prediction files for each 20km UNQ GRID_ID cell in #SBATCH --array in ```{VERSION_DIR}/data/predict/processed```   
 * 'cultionet predict' runs inference on UNQ GRID_ID cells, save 4band predictions in ```{VERSION_DIR}/composites_probas``` where b1=crop extent probability, b2=distance to border, b3=border probability, and b4 is blank     
 
-#### <b>sbatch seg4_fieldMetrics</b>    
+#### <b>sbatch seg4_fieldMetrics.sh</b>    
 * saves single-band inference rasters -- 1:distance to border, 2:extent in ```{VERSION_DIR}/feats```  
 * create vectors of crop field instances in  ```{VERSION_DIR}/infer_polys``` to calculate field size attributes -- 3:area, 4:area/perimeter(APR), 5:texture(seasonal stDev) -- then convert those attributes to rasters in ```{VERSION_DIR}/feats``` 
   
 
-#### <b>sbatch seg5_chipAcc</b>    
+#### <b>sbatch seg5_chipAcc.sh</b>    
 * calculate per-chip accuracy metrics compared to reference(training digitizations)       
