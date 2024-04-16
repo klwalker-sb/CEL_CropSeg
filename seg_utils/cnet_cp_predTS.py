@@ -18,7 +18,7 @@ def main():
                 spec_index=VI, 
                 proj_grid_dir=sys.argv[6], 
                 version_dir=sys.argv[2], 
-                mmdd=sys.argv[4], 
+                MMDD=sys.argv[4], 
                 end_yr=int(sys.argv[3]))
 
 if __name__ == "__main__":
