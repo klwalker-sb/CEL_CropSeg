@@ -9,7 +9,7 @@ from rasterio import features
 import geopandas as gpd
 
 import cnet_funcs as cf
-imoprt semantic_to_instance as s2i
+import semantic_to_instance as s2i
 
 
 def main():
@@ -80,7 +80,7 @@ def main():
     for grid in grids:
         grid_bound = proc_grid[proc_grid['UNQ'] == int(grid)].geometry.iloc[0]
         polys_per_grid = gpd.clip(field_shp, grid_bound) ## making area raster from merged shape 
-        rst_fn = os.path.join(out_dir, "_".join([pred_prefix, str(instance_method), str(grid), params+"th.tif"]))
+        rst_fn = os.path.join(out_dir, pred_prefix+str(instance_method)+"_"+str(grid)+"_"+params+"th.tif")
 
         ## raster to use as template
         rst = rio.open(rst_fn)

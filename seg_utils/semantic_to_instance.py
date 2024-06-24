@@ -7,12 +7,15 @@ import numpy as np
 import rasterio as rio
 from rasterio.features import shapes
 import geopandas as gpd
-from osgeo import gdal
+#from osgeo import gdal
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.feature import peak_local_max
 from rasterstats import zonal_stats, point_query
 import shapely
+from rasterio.windows import Window
+from rasterio.features import shapes
+from shapely.geometry import Polygon
 from shapely import BufferCapStyle, BufferJoinStyle   
 from shapely.geometry import Point, LineString, Polygon
 from numpy import copy
@@ -24,7 +27,6 @@ import cnet_funcs as cf
 
 #############################################################################################
 
-from rasterio.features import shapes
 
 def instance_to_poly(input_raster):
     with rio.open(input_raster, 'r') as tmp:
@@ -159,8 +161,8 @@ def SINGLE_semantic2instance(pred_dir, out_dir, instance_method, bound_thresh=0.
         
         if singleBand==True:
             name = os.path.basename(pred_rast)            
-            dist_pba_name = os.path.join(feat_dir, name.replace("pred_PY_", "pred_dst_"))
-            extent_pba_name = os.path.join(feat_dir, name.replace("pred_PY_", "pred_ext_"))            
+            dist_pba_name = os.path.join(pred_dir, name.replace("pred_PY_", "pred_dst_"))
+            extent_pba_name = os.path.join(pred_dir, name.replace("pred_PY_", "pred_ext_"))            
             with rio.open(pred_rast) as src:
                 out_meta = src.meta.copy()
                 dist_arr, bound_arr, ext_arr, _ = src.read()   
