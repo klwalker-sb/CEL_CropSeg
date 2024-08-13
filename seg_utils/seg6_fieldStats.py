@@ -25,7 +25,7 @@ def img_to_bbox_offsets(gt, bbox):
     return [x1, y1, xsize, ysize]
 
 def main():
-    
+
     grid_num = str(sys.argv[1])
     grid_dir = sys.argv[2] ## "/home/downspout-cel/paraguay_lc/stac/grids/"
     shape_dir = sys.argv[3] ## "/home/downspout-cel/paraguay_lc/Segmentations/infer_polys_EO_7/"
@@ -35,53 +35,70 @@ def main():
     jd_end = int(sys.argv[7]) ## 2021365
 
     grid_dir = os.path.join(grid_dir, "00"+grid_num, "brdf_ts", "ms", "gcvi")
+    rasts = sorted([i for i in os.listdir(grid_dir) if i.endswith(".tif") and (int(i.replace(".tif", "")) > jd_start and int(i.replace(".tif", "")) < jd_end)])
 
     out_fn = os.path.join(full_out_dir, "AvgNovDec_FieldStd_"+grid_num+".tif")
-    
+
     if not os.path.exists(out_fn):
-        tmp_out_dir="/home/scratch-cel/tmp_rasts/"
-        if not os.path.exists(tmp_out_dir):
-            os.makedirs(tmp_out_dir)        
-        
         proc_grid = gpd.read_file('/home/downspout-cel/paraguay_lc/Segmentations/PY_grid_8858.gpkg')
         proc_grid = proc_grid.set_crs("EPSG:8858")
         bounds = proc_grid[proc_grid['UNQ'] == int(grid_num)].geometry.iloc[0].bounds ## bounds returns (minx, miny, maxx, maxy)
         boundary = (float(bounds[0]), float(bounds[2]), float(bounds[1] ), float(bounds[3]))
-        shape = gpd.read_file([os.path.join(shape_dir,i) for i in os.listdir(shape_dir) if grid_num in i and i.endswith(".gpkg")][0])
-        
-        rasts = sorted([i for i in os.listdir(grid_dir) if i.endswith(".tif") and (int(i.replace(".tif", "")) > jd_start and int(i.replace(".tif", "")) < jd_end)])
-        stack = []
-        for rast in rasts:
-            with rio.open(os.path.join(grid_dir, rast)) as src:
-                gt = src.transform
-                offset = img_to_bbox_offsets(gt, boundary)
-                new_gt = rio.Affine(gt[0], gt[1], (gt[2] + (offset[0] * gt[0])), 0.0, gt[4], (gt[5] + (offset[1] * gt[4])))
-                arr = src.read(window=Window(offset[0], offset[1], offset[2], offset[3]))      
-                stack.append(arr)            
+        polys = gpd.read_file([os.path.join(shape_dir,i) for i in os.listdir(shape_dir) if grid_num in i and i.endswith(".gpkg")][0])
+        if polys.shape[0] == 0:
+            print('there are no ploygon features in this cell')
+            with rio.open(os.path.join(grid_dir, rasts[0])) as src:
                 out_meta = src.meta.copy()
-                out_meta.update({"count": 1, "dtype":np.int16, "transform":new_gt, "width":2000, "height":2000})
-        avg_arr = np.nanmean(stack, axis=0)
-        out_shape = avg_arr.shape
-        ## save intermediate mean raster 
-        out_name = os.path.join(tmp_out_dir, "NovDecMean_"+grid_num+".tif")
-        with rio.open(out_name, "w", **out_meta) as dst:
-            dst.write(avg_arr)
+                out_meta.update({"count": 1, "dtype":np.int16})
+                samp_ras = src.read(1)
+                blank_ras = samp_ras*0
+            with rio.open(out_fn, 'w+', **out_meta) as dst:
+                dst.write_band(1, blank_ras)
+            ## Make other blank filler files:
+            out_fn2 = os.path.join(full_out_dir, "pred_APR_"+grid_num+".tif")
+            out_fn3 = os.path.join(full_out_dir, "pred_area_"+grid_num+".tif")
+            with rio.open(out_fn2, 'w+', **out_meta) as dst:
+                dst.write_band(1, blank_ras)
+            with rio.open(out_fn3, 'w+', **out_meta) as dst:
+                dst.write_band(1, blank_ras)
 
-        ## within each polygon, find st dev of Nov-Dec mean
-        gdf = shape.join(pd.DataFrame(zonal_stats(
-            vectors=shape['geometry'], raster=out_name, stats=[stat])), how='left' )
-        ## delete intermediate mean raster
-        os.remove(out_name)
-        #os.remove(out_name.replace(".tif", ".tif.aux.xml"))
+        else:
+            tmp_out_dir="/home/scratch-cel/tmp_rasts/"
+            if not os.path.exists(tmp_out_dir):
+                os.makedirs(tmp_out_dir)
 
-        ## save raster 
-        with rio.open(out_fn, 'w+', **out_meta) as dst:
-            tmp_arr = dst.read(1)
-            ## rasterize polygon using st dev value
-            shapes = ((geom,value) for geom, value in zip(gdf.geometry, gdf[stat]))
-            image = features.rasterize( ((g, v) for g, v in shapes), out_shape=out_shape[1:], transform=new_gt)
-            dst.write_band(1, image)
+            stack = []
+            for rast in rasts:
+                with rio.open(os.path.join(grid_dir, rast)) as src:
+                    gt = src.transform
+                    offset = img_to_bbox_offsets(gt, boundary)
+                    new_gt = rio.Affine(gt[0], gt[1], (gt[2] + (offset[0] * gt[0])), 0.0, gt[4], (gt[5] + (offset[1] * gt[4])))
+                    arr = src.read(window=Window(offset[0], offset[1], offset[2], offset[3]))      
+                    stack.append(arr)            
+                    out_meta = src.meta.copy()
+                    out_meta.update({"count": 1, "dtype":np.int16, "transform":new_gt, "width":2000, "height":2000})
+            avg_arr = np.nanmean(stack, axis=0)
+            out_shape = avg_arr.shape
+            ## save intermediate mean raster 
+            out_name = os.path.join(tmp_out_dir, "NovDecMean_"+grid_num+".tif")
+            with rio.open(out_name, "w", **out_meta) as dst:
+                dst.write(avg_arr)
+ 
+            ## within each polygon, find st dev of Nov-Dec mean
+            gdf = polys.join(pd.DataFrame(zonal_stats(
+                vectors=polys['geometry'], raster=out_name, stats=[stat])), how='left' )
+            ## delete intermediate mean raster
+            os.remove(out_name)
+            #os.remove(out_name.replace(".tif", ".tif.aux.xml"))
+
+            ## save raster 
+            with rio.open(out_fn, 'w+', **out_meta) as dst:
+                tmp_arr = dst.read(1)
+                ## rasterize polygon using st dev value
+                shapes = ((geom,value) for geom, value in zip(gdf.geometry, gdf[stat]))
+                image = features.rasterize( ((g, v) for g, v in shapes), out_shape=out_shape[1:], transform=new_gt)
+                dst.write_band(1, image)
             print(out_fn)
-        
+
 if __name__ == "__main__":
     main()

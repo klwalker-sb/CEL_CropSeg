@@ -92,10 +92,15 @@ def cut_fields(vectorized_gdf):
     ## combine 
     new_cut_geom = pd.concat([empty_old, old_polys, multi_explode_reBuff], axis=0)
 
+    
     ## dissolve shapes that touch 
-    print(len(new_cut_geom))
-    dissolved_geom = gpd.geoseries.GeoSeries([geom for geom in new_cut_geom.unary_union.geoms])
-    dissolved_gdf = gpd.GeoDataFrame(pd.DataFrame(list(range(0,len(dissolved_geom), 1)), columns=['pred_id']), geometry=dissolved_geom)    
+    print(f'length of new gemetry object is {len(new_cut_geom)}')
+    if len(new_cut_geom) == 1:
+        vectorized_gdf = vectorized_gdf.reset_index()
+        dissolved_gdf = vectorized_gdf.drop(columns=["raster_val","area","level_1","level_0"])
+    else:
+        dissolved_geom = gpd.geoseries.GeoSeries([geom for geom in new_cut_geom.unary_union.geoms])
+        dissolved_gdf = gpd.GeoDataFrame(pd.DataFrame(list(range(0,len(dissolved_geom), 1)), columns=['pred_id']), geometry=dissolved_geom)    
 
     dissolved_gdf = dissolved_gdf.set_crs(proj_crs)
     
@@ -248,6 +253,6 @@ def SINGLE_semantic2instance(pred_dir, out_dir, instance_method, bound_thresh=0.
             ## cut fields 
             cut_polys = cut_fields(merged_polygons)
             print(cut_polys)
-            if len(cut_polys) > 1:
+            if len(cut_polys) > 0:
                 cut_polys.to_file(os.path.join(out_dir, fname.replace(".gpkg", "_cut.gpkg")), mode="w")
 

@@ -46,7 +46,6 @@ def main():
     ## save extent band and distance to boundary band. also write instance raster -> polys + cut
 
 
-
     proc_grid = gpd.read_file(grid_file)
     proj_crs = proc_grid.crs
     ## merge polys so area calculations aren't cut off at edges
@@ -58,8 +57,8 @@ def main():
         print(files)
         gdfs = [gpd.read_file(f) for f in files]
         field_shp = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True)).dissolve().explode()
-        
-        ## add field size attributes 
+
+        ## add field size attributes
         field_shp['area'] = field_shp.area*0.0001
         field_shp['perimeter'] = field_shp.length
         field_shp['APR'] = field_shp.area/field_shp.length

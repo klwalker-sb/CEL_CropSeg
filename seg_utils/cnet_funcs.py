@@ -14,6 +14,7 @@ from rasterio.features import shapes, coords
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from shapely.geometry import box, Polygon
 from datetime import datetime
+from osgeo import gdal, ogr, gdal_array
 
 
 
@@ -25,9 +26,9 @@ def update_yml(yml_path, param_value_dict):
         value = yaml.safe_load(file)
     for key in param_value_dict:
         value[key] = param_value_dict[key]
-    
+
     with open(yml_path, 'w') as file:
-        yaml.dump(value, file, sort_keys=False)        
+        yaml.dump(value, file, sort_keys=False)
 
 
 
@@ -36,22 +37,44 @@ def update_yml(yml_path, param_value_dict):
 
 def prep_user_train(training_digitizations, user_train_dir, end_yr):
     class_col = "class"
-    
     polys = gpd.read_file(training_digitizations, mode="r")
     chips = gpd.read_file(training_digitizations.replace("_Polys", "_Chips"),  mode="r")
     proj_crs = polys.crs
     polys = polys[polys.columns.drop(list(polys.filter(regex='Notes')))]
     chips = chips[chips.columns.drop(list(chips.filter(regex='Notes')))]
-    
-    ## CHIPS 
-    for kk, chp in sorted(chips.iterrows()):
+    adjusted_chips = []
+    skipped_chips = []
+    #chips = sorted(chips)
+    ## CHIPS
+    for i, chp in chips.iterrows():
         chip_region = chp.region
-        out_chip_name = os.path.join(user_train_dir, str(chip_region)+"_grid_"+str(end_yr)+".gpkg")   
-        if not os.path.exists(out_chip_name): ###############
-            df = chp.rename(None).to_frame().T ## format chip dataframe 
-            chip_gdf = gpd.GeoDataFrame(df, crs=proj_crs, geometry=df.geometry)  ## create chip's GeoDataFrame
-            chip_gdf.to_file(out_chip_name, crs=proj_crs, driver="GPKG") ### output chip 
-            chip_polys = polys.sjoin(chip_gdf, how="inner") ## select digitizations that intersect chip  
+        out_chip_name = os.path.join(user_train_dir, str(chip_region)+"_grid_"+str(end_yr)+".gpkg")
+        ## check dimensions
+        xdim = chips.bounds.iloc[i]['maxx']-chips.bounds.iloc[i]['minx']
+        ydim = chips.bounds.iloc[i]['maxy']-chips.bounds.iloc[i]['miny']
+        if xdim != 1000 or ydim != 1000:
+            if abs(1000-xdim) < 1 and abs(1000-ydim) < 1:
+                adjusted_chips.append(chip_region)
+                print(f'dims for chip {chip_region} not quite 1000; adjusting now...')
+                print(f'old bounds: {chips.bounds.iloc[i]}')
+                new_box = [box(chips.bounds.iloc[i]['minx'],chips.bounds.iloc[i]['miny'],
+                          chips.bounds.iloc[i]['minx']+1000,chips.bounds.iloc[i]['miny']+1000)]
+                df = chp.rename(None).to_frame().T
+                print(df)
+                chip_gdf = gpd.GeoDataFrame(df, crs=proj_crs, geometry=new_box)
+                print(f'new bounds: {chip_gdf.bounds.iloc[0]}')
+                chip_gdf.to_file(out_chip_name, crs=proj_crs, driver="GPKG") ### output chip
+            else:
+                print(f'ERROR: cannot process chip: {chip_region} because dims not close to 1000: x-dim = {xdim}, y-dim = {ydim} \n')
+                skipped_chips.append(chip_region)
+                continue
+            #else:
+            #if not os.path.exists(out_chip_name): ###############
+            #    df = chp.rename(None).to_frame().T ## format chip dataframe
+            #    chip_gdf = gpd.GeoDataFrame(df, crs=proj_crs, geometry=df.geometry)  ## create chip's GeoDataFrame
+            #    chip_gdf.to_file(out_chip_name, crs=proj_crs, driver="GPKG") ### output chip
+
+            chip_polys = polys.sjoin(chip_gdf, how="inner") ## select digitizations that intersect chip
             chip_polys = chip_polys[chip_polys.columns.drop(list(chip_polys.filter(regex='right')))] ## drop duplicate columns
             chip_polys = chip_polys[chip_polys.columns.drop(list(chip_polys.filter(regex='left')))] ## drop duplicate columns
             chip_polys['Name'] = str(chip_region)+"_poly_"+str(end_yr) ## Name column for cultionet 
@@ -74,6 +97,8 @@ def prep_user_train(training_digitizations, user_train_dir, end_yr):
         else:
             print('user_train already made for '+str(out_chip_name))
 
+    print(f'skipped chips:{skipped_chips} \n')
+    print(f'adjusted chips:{adjusted_chips} \n')
 
 ###############################################
 
@@ -84,14 +109,13 @@ def clip_chip(grid_num, spec_index, project_directory, version_dir, grid_file, e
     for chip in chip_list:
         chip_num = int(chip.split("_")[0])
         chip_clip_shape = gpd.read_file(os.path.join(version_dir, "user_train", chip))
-        
-        bounds = (float(chip_clip_shape.bounds.iloc[0]['minx']), float(chip_clip_shape.bounds.iloc[0]['maxx']), float(chip_clip_shape.bounds.iloc[0]['miny'] ), float(chip_clip_shape.bounds.iloc[0]['maxy']))
+        bounds =(float(chip_clip_shape.bounds.iloc[0]['minx']),float(chip_clip_shape.bounds.iloc[0]['maxx']),
+            float(chip_clip_shape.bounds.iloc[0]['miny']),float(chip_clip_shape.bounds.iloc[0]['maxy']))
         rast_dir=os.path.join(project_directory,  str(grid_num).zfill(6), "brdf_ts", "ms", spec_index)
         print(rast_dir)
-        
 
         if os.path.exists(rast_dir):
-       
+
             ## check that the VI folder was made after 7/15/2023 
             dd_made, mm_made, yyyy_made = datetime.fromtimestamp(os.path.getctime(rast_dir)).strftime("%d-%m-%Y").split("-")
             if (int(yyyy_made)>2023) or (int(yyyy_made)==2023 and int(mm_made) >=7) or "AI4Boundaries" not in project_directory: ##or  (int(yyyy_made)==2023 and int(mm_made) == 7 and int(dd_made) > 15)
